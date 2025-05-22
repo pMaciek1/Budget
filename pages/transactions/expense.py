@@ -1,14 +1,9 @@
 import streamlit as st
 import sqlite3 as sql
+from utils import models
 
 connection = sql.connect('budget.db', check_same_thread=False)
 cursor = connection.cursor()
-
-def add_expense(category, title, date, amount):
-    cursor.execute("CREATE TABLE IF NOT EXISTS expenses (DATE_ADDED TEXT(30),CATEGORY TEXT(30),TITLE TEXT(25),AMOUNT TEXT(20) )")
-    cursor.execute("INSERT INTO expenses VALUES (?,?,?,?)", (date, category, title, '-'+str(amount)))
-    connection.commit()
-    connection.close()
 
 with st.form('expense'):
     st.write('Add a new expense')
@@ -22,7 +17,12 @@ with st.form('expense'):
 
 if expense_submit:
     if expense_amount and expense_title:
-        add_expense(expense_category, expense_title, expense_date, expense_amount)
+        expense = models.Expense(expense_title, expense_amount, expense_date, expense_category)
+        expense.add_to_db(connection, cursor)
         st.success('Expense has been added')
+    elif not expense_title and not expense_amount:
+        st.error('Expense has not been added - missing title and amount')
+    elif not expense_title:
+        st.error('Expense has not been added - missing title')
     else:
-        st.error('Expense has not been added - missing title/amount')
+        st.error('Expense has not been added - missing amount')

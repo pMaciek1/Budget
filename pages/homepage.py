@@ -8,38 +8,56 @@ month = datetime.today().month
 
 connection = sql.connect('budget.db', check_same_thread=False)
 
-expenses_df = pd.read_sql_query('SELECT * FROM expenses', connection)
-revenues_df = pd.read_sql_query('SELECT * FROM revenues', connection)
 
-expenses_df = expenses_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
-revenues_df = revenues_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+try:
+    expenses_df = pd.read_sql_query('SELECT * FROM expenses', connection)
+    expenses_df = expenses_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+
+    expenses = 0
+    for index, row in expenses_df.iterrows():
+        if int(row['DATE ADDED'][5:7]) == month:
+            expenses += float(row['AMOUNT'][1:])
+
+    expenses_df = expenses_df[::-1]
+    expenses_df = expenses_df[:5]
+
+except pd.errors.DatabaseError:
+    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expens"e page!'], [0,1], ['-'])
+    expenses = 0
+
+try:
+    incomes_df = pd.read_sql_query('SELECT * FROM incomes', connection)
+    incomes_df = incomes_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+
+    incomes = 0
+    for index, row in incomes_df.iterrows():
+        if int(row['DATE ADDED'][5:7]) == month:
+            incomes += float(row['AMOUNT'])
+
+    incomes_df = incomes_df[::-1]
+    incomes_df = incomes_df[:5]
+
+except pd.errors.DatabaseError:
+    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0,1], ['-'])
+    incomes = 0
 
 
-expenses = 0
-for index, row in expenses_df.iterrows():
-    if int(row['DATE ADDED'][5:7]) == month:
-        expenses += float(row['AMOUNT'][1:])
-
-revenues = 0
-
-for index, row in revenues_df.iterrows():
-    if int(row['DATE ADDED'][5:7]) == month:
-        revenues += float(row['AMOUNT'])
-
-
-expenses_df = expenses_df[::-1]
-revenues_df = revenues_df[::-1]
-expenses_df = expenses_df[:5]
-revenues_df = revenues_df[:5]
-
-col1, col2 = st.columns(2)
+col1, col2 = st.columns(2, border=True)
 
 with col1:
     st.title("Latest expenses")
     st.dataframe(expenses_df, hide_index=True)
-    st.write(f"Total expenses this month: {expenses} PLN")
+    st.markdown(f'''#### Total expenses this month: :red-background[{expenses} PLN]''')
 with col2:
-    st.title("Latest revenues")
-    st.dataframe(revenues_df, hide_index=True)
-    st.write(f"Total revenues this month: {revenues} PLN")
+    st.title("Latest incomes")
+    st.dataframe(incomes_df, hide_index=True)
+    st.markdown(f'''#### Total incomes this month: :green-background[{incomes} PLN]''')
 
+
+total = incomes - expenses
+if total > 0:
+    st.markdown(f'''### Total balance this month: :green-background[{total}] PLN''')
+elif total < 0:
+    st.markdown(f'''### Total balance this month: :red-background[{total}] PLN''')
+else:
+    st.markdown(f'''### Total balance this month: :orange-background[{total}] PLN''')
