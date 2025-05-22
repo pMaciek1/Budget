@@ -2,6 +2,8 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
+
+
 pages  = {
     "": [
         st.Page("pages/homepage.py", title="Home", icon=":material/home:"),

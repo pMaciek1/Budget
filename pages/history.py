@@ -3,6 +3,8 @@ import streamlit as st
 import sqlite3 as sql
 import pandas as pd
 
+def transaction_delete():
+    pass #supposed to delete record
 
 connection = sql.connect('budget.db', check_same_thread=False)
 expenses_rdy = True
@@ -21,7 +23,7 @@ except pandas.errors.DatabaseError:
     incomes_rdy = False
 
 if expenses_rdy and incomes_rdy:
-    all_df = pd.concat([expenses_df, incomes_df]).sort_values('DATE_ADDED', ascending=False)
+    all_df = pd.concat([expenses_df, incomes_df]).sort_values('ID', ascending=True)
 elif expenses_rdy:
     all_df = expenses_df
 elif incomes_rdy:
@@ -52,6 +54,7 @@ else:
     df = incomes_df
 
 df = df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+df = df.drop(columns=['ID'])
 df.reset_index(drop=True, inplace=True)
 
-st.dataframe(df, hide_index=True)
+st.dataframe(df, hide_index=True, on_select=transaction_delete(), selection_mode="single-row")

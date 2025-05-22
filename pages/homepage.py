@@ -12,6 +12,7 @@ connection = sql.connect('budget.db', check_same_thread=False)
 try:
     expenses_df = pd.read_sql_query('SELECT * FROM expenses', connection)
     expenses_df = expenses_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+    expenses_df = expenses_df.drop(columns=['ID'])
 
     expenses = 0
     for index, row in expenses_df.iterrows():
@@ -28,6 +29,7 @@ except pd.errors.DatabaseError:
 try:
     incomes_df = pd.read_sql_query('SELECT * FROM incomes', connection)
     incomes_df = incomes_df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
+    incomes_df = incomes_df.drop(columns=['ID'])
 
     incomes = 0
     for index, row in incomes_df.iterrows():
@@ -56,8 +58,8 @@ with col2:
 
 total = incomes - expenses
 if total > 0:
-    st.markdown(f'''### Total balance this month: :green-background[{total}] PLN''')
+    st.markdown(f'''### Total balance this month: :green-background[{total} PLN]''')
 elif total < 0:
-    st.markdown(f'''### Total balance this month: :red-background[{total}] PLN''')
+    st.markdown(f'''### Total balance this month: :red-background[{total} PLN]''')
 else:
-    st.markdown(f'''### Total balance this month: :orange-background[{total}] PLN''')
+    st.markdown(f'''### Total balance this month: :orange-background[{total} PLN]''')
