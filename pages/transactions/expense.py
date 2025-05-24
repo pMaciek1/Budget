@@ -15,9 +15,15 @@ with st.form('expense'):
     expense_amount = st.number_input('Amount', format='%0.2f')
     expense_submit = st.form_submit_button('Submit')
 
+
 if expense_submit:
     if expense_amount and expense_title:
-        expense = models.Expense(expense_title, expense_amount, expense_date, expense_category)
+        try:
+            id = cursor.execute('SELECT MAX(ID) FROM expenses').fetchone()[0]
+            id += 1
+        except sql.OperationalError and TypeError:
+            id = 0
+        expense = models.Expense(id, expense_title, expense_amount, expense_date, expense_category)
         expense.add_to_db(connection, cursor)
         st.success('Expense has been added')
     elif not expense_title and not expense_amount:

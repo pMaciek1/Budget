@@ -12,9 +12,15 @@ with st.form('income'):
     income_amount = st.number_input('Amount', format='%0.2f')
     income_submit = st.form_submit_button('Submit')
 
+
 if income_submit:
     if income_title and income_amount:
-        income = models.Income(income_title, income_amount, income_date)
+        try:
+            id = cursor.execute('SELECT MAX(ID) FROM incomes').fetchone()[0]
+            id += 1
+        except sql.OperationalError and TypeError:
+            id = 0
+        income = models.Income(id, income_title, income_amount, income_date)
         income.add_to_db(connection, cursor)
         st.success('Income has been added')
     elif not income_title and not income_amount:
