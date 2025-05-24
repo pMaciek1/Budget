@@ -17,13 +17,18 @@ try:
     expenses = 0
     for index, row in expenses_df.iterrows():
         if int(row['DATE ADDED'][5:7]) == month:
-            expenses += float(row['AMOUNT'][1:])
+            expenses += float(row['AMOUNT'])
 
     expenses_df = expenses_df[::-1]
     expenses_df = expenses_df[:5]
 
 except pd.errors.DatabaseError:
     expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expens"e page!'], [0,1], ['-'])
+    expenses = 0
+
+if expenses_df.empty:
+    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expense" page!'],
+                               [0, 1], ['-'])
     expenses = 0
 
 try:
@@ -41,6 +46,11 @@ try:
 
 except pd.errors.DatabaseError:
     incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0,1], ['-'])
+    incomes = 0
+
+if incomes_df.empty:
+    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0, 1],
+                              ['-'])
     incomes = 0
 
 

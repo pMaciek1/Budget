@@ -76,13 +76,14 @@ with col2:
         option = st.radio('**What do you want to do with this transaction?**', ['Edit', 'Delete'], horizontal=True)
         table = 'incomes' if df.iloc[selected_row]['CATEGORY'] == 'Income' else 'expenses'
         id_to_edit = df.iloc[selected_row]['ID']
+        categories = ['Food', 'Chemicals', 'Pets', 'Eating out', 'Activities outside of home', 'Rent/Bills',
+                      'House', 'Healthcare/Beauty', 'Clothing', 'Car/Petrol', 'Others']
         if option == 'Edit':
             with st.form('edit'):
-                category = st.selectbox('Category',
-                                                ['Food', 'Chemicals', 'Pets', 'Eating out', 'Activities outside of home',
-                                                 'Rent/Bills',
-                                                 'House', 'Healthcare/Beauty', 'Clothing', 'Car/Petrol', 'Others'],
-                                                disabled=(table == 'incomes'))
+                if table == 'expenses':
+                    category = st.selectbox('Category', categories, index=categories.index(df.iloc[selected_row]['CATEGORY']))
+                else:
+                    st.empty()
                 title = st.text_input('Title', df.iloc[selected_row]['TITLE'])
                 date = st.date_input('Date', df.iloc[selected_row]['DATE ADDED'])
                 amount = st.number_input('Amount', min_value=0.0, value=float(df.iloc[selected_row]['AMOUNT']))
