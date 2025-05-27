@@ -1,44 +1,12 @@
-import pandas.errors
 import streamlit as st
 import sqlite3 as sql
-import pandas as pd
+from utils.funs import setup_dfs
 import time
 
 connection = sql.connect('budget.db', check_same_thread=False)
 cursor = connection.cursor()
-expenses_rdy = True
-incomes_rdy = True
 
-try:
-    expenses_df = pd.read_sql_query('SELECT * FROM expenses', connection)
-except pandas.errors.DatabaseError:
-    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expense" page!'], [0,1], ['-'])
-    expenses_rdy = False
-
-if expenses_df.empty:
-    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expense" page!'],
-                               [0, 1], ['-'])
-    expenses_rdy = False
-
-try:
-    incomes_df = pd.read_sql_query('SELECT * FROM incomes', connection)
-except pandas.errors.DatabaseError:
-    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0,1], ['-'])
-    incomes_rdy = False
-
-if incomes_df.empty:
-    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0, 1],
-                              ['-'])
-    incomes_rdy = False
-
-if expenses_rdy and incomes_rdy:
-    all_df = pd.concat([expenses_df, incomes_df]).sort_values('ID', ascending=True)
-elif expenses_rdy:
-    all_df = expenses_df
-elif incomes_rdy:
-    all_df = incomes_df
-else:
-    all_df = pd.DataFrame(['No transactions', 'You can add an income in the "Add Transaction" pages!'], [0,1], ['-'])
+all_df, incomes_df, expenses_df, incomes_rdy, expenses_rdy = setup_dfs()
 
 if expenses_rdy:
     expense_categories = expenses_df['CATEGORY'].unique().tolist()
@@ -70,8 +38,11 @@ with col1:
 
     tab = st.dataframe(df, hide_index=True, on_select='rerun', selection_mode='single-row', column_config={'ID': None})
 
+def any_rdy() -> bool:
+    return (selected_option == 'Expenses' and expenses_rdy) or (selected_option == 'Incomes' and incomes_rdy) or (selected_option == 'All') and (expenses_rdy or incomes_rdy)
+
 with col2:
-    if tab.selection['rows'] and ((selected_option == 'Expenses' and expenses_rdy) or (selected_option == 'Incomes' and incomes_rdy) or (selected_option == 'All') and (expenses_rdy or incomes_rdy)):
+    if tab.selection['rows'] and any_rdy():
         selected_row = tab.selection['rows'][0]
         option = st.radio('**What do you want to do with this transaction?**', ['Edit', 'Delete'], horizontal=True)
         table = 'incomes' if df.iloc[selected_row]['CATEGORY'] == 'Income' else 'expenses'
