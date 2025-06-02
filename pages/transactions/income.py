@@ -22,6 +22,7 @@ if income_submit:
             trans_id = 0
         income = models.Income(trans_id, income_title, income_amount, income_date)
         income.add_to_db(connection, cursor)
+        connection.close()
         st.success('Income has been added')
     elif not income_title and not income_amount:
         st.error('Income has not been added - missing title and amount')

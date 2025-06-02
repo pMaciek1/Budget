@@ -29,6 +29,7 @@ if expense_submit:
         expense = models.Expense(trans_id, expense_title, expense_amount,
                                  expense_date, expense_category)
         expense.add_to_db(connection, cursor)
+        connection.close()
         st.success('Expense has been added')
     elif not expense_title and not expense_amount:
         st.error('Expense has not been added - missing title and amount')

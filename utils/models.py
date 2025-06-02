@@ -7,7 +7,8 @@ class Transaction:
 
 
 class Income(Transaction):
-    def __init__(self, trans_id: int, title, amount, date):
+    def __init__(self, trans_id: int, title: str,
+                 amount: str, date: str):
         super().__init__(trans_id, title, amount, date)
 
     def add_to_db(self, connection, cursor) -> None:
@@ -18,7 +19,6 @@ class Income(Transaction):
         cursor.execute("INSERT INTO incomes VALUES (?,?,?,?,?)",
                        (self.trans_id, self.date, 'Income', self.title, self.amount))
         connection.commit()
-        connection.close()
 
 
 class Expense(Transaction):
@@ -36,4 +36,3 @@ class Expense(Transaction):
                        (self.trans_id, self.date, self.category,
                         self.title, str(self.amount)))
         connection.commit()
-        connection.close()
