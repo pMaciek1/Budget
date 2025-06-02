@@ -1,5 +1,5 @@
-import streamlit as st
 import sqlite3 as sql
+import streamlit as st
 from utils import models
 
 connection = sql.connect('budget.db', check_same_thread=False)
@@ -16,11 +16,11 @@ with st.form('income'):
 if income_submit:
     if income_title and income_amount:
         try:
-            id = cursor.execute('SELECT MAX(ID) FROM incomes').fetchone()[0]
-            id += 1
-        except sql.OperationalError and TypeError:
-            id = 0
-        income = models.Income(id, income_title, income_amount, income_date)
+            trans_id = cursor.execute('SELECT MAX(ID) FROM incomes').fetchone()[0]
+            trans_id += 1
+        except sql.OperationalError or TypeError:
+            trans_id = 0
+        income = models.Income(trans_id, income_title, income_amount, income_date)
         income.add_to_db(connection, cursor)
         st.success('Income has been added')
     elif not income_title and not income_amount:

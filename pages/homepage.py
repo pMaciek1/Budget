@@ -1,7 +1,7 @@
-import streamlit as st
-import sqlite3 as sql
-import pandas as pd
 from datetime import datetime
+import sqlite3 as sql
+import streamlit as st
+import pandas as pd
 
 month = datetime.today().month
 
@@ -23,11 +23,16 @@ try:
     expenses_df = expenses_df[:5]
 
 except pd.errors.DatabaseError:
-    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expens"e page!'], [0,1], ['-'])
+    expenses_df = pd.DataFrame(['No expenses',
+                                'You can add an expense in the '
+                                '"Add Transaction -> Expense" page!'],
+                               [0, 1], ['-'])
     expenses = 0
 
 if expenses_df.empty:
-    expenses_df = pd.DataFrame(['No expenses', 'You can add an expense in the "Add Transaction -> Expense" page!'],
+    expenses_df = pd.DataFrame(['No expenses',
+                                'You can add an expense in the '
+                                '"Add Transaction -> Expense" page!'],
                                [0, 1], ['-'])
     expenses = 0
 
@@ -45,12 +50,17 @@ try:
     incomes_df = incomes_df[:5]
 
 except pd.errors.DatabaseError:
-    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0,1], ['-'])
+    incomes_df = pd.DataFrame(['No incomes',
+                               'You can add an income in the '
+                               '"Add Transaction -> Income" page!'],
+                              [0, 1], ['-'])
     incomes = 0
 
 if incomes_df.empty:
-    incomes_df = pd.DataFrame(['No incomes', 'You can add an income in the "Add Transaction -> Income" page!'], [0, 1],
-                              ['-'])
+    incomes_df = pd.DataFrame(['No incomes',
+                               'You can add an income in the '
+                               '"Add Transaction -> Income" page!'],
+                              [0, 1], ['-'])
     incomes = 0
 
 
