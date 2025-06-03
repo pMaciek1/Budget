@@ -1,13 +1,13 @@
 import time
 import sqlite3 as sql
 import streamlit as st
-import utils.funs
+import tests.funs
 
 
 connection = sql.connect('budget.db', check_same_thread=False)
 cursor = connection.cursor()
 
-all_df, incomes_df, expenses_df, incomes_rdy, expenses_rdy = utils.funs.setup_dfs()
+all_df, incomes_df, expenses_df, incomes_rdy, expenses_rdy = tests.funs.setup_dfs(connection)
 
 years = all_df['DATE_ADDED'].astype(str).str[0:4].unique().tolist()
 year = st.selectbox('Select year to view data', ['All years'] + years)
@@ -49,9 +49,9 @@ with col1:
     else:
         df = incomes_df
 
-    df = utils.funs.filter_df_by_year(df, year)
+    df = tests.funs.filter_df_by_year(df, year)
     if year != 'All years':
-        df = utils.funs.filter_df_by_month(df, month)
+        df = tests.funs.filter_df_by_month(df, month)
 
     df = df.rename(columns={'DATE_ADDED': 'DATE ADDED'})
     df.reset_index(drop=True, inplace=True)

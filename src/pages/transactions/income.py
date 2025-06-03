@@ -1,6 +1,6 @@
 import sqlite3 as sql
 import streamlit as st
-from utils import models
+from tests import models
 
 connection = sql.connect('budget.db', check_same_thread=False)
 cursor = connection.cursor()

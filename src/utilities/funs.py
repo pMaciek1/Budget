@@ -1,17 +1,12 @@
 import calendar
-import sqlite3 as sql
 import pandas as pd
 
 
-connection = sql.connect('budget.db', check_same_thread=False)
-cursor = connection.cursor()
-
-
-def setup_dfs() -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, bool, bool):
+def setup_dfs(conn) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, bool, bool):
     expenses_rdy = True
     incomes_rdy = True
     try:
-        expenses_df = pd.read_sql_query('SELECT * FROM expenses', connection)
+        expenses_df = pd.read_sql_query('SELECT * FROM expenses', conn)
     except pd.errors.DatabaseError:
         expenses_df = pd.DataFrame(['No expenses',
                                     'You can add an expense in the '
@@ -27,7 +22,7 @@ def setup_dfs() -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, bool, bool):
         expenses_rdy = False
 
     try:
-        incomes_df = pd.read_sql_query('SELECT * FROM incomes', connection)
+        incomes_df = pd.read_sql_query('SELECT * FROM incomes', conn)
     except pd.errors.DatabaseError:
         incomes_df = pd.DataFrame(['No incomes',
                                    'You can add an income in the '
