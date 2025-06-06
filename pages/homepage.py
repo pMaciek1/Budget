@@ -67,11 +67,11 @@ if incomes_df.empty:
 col1, col2 = st.columns(2, border=True)
 
 with col1:
-    st.title("Latest expenses")
+    st.title("Lately added expenses")
     st.dataframe(expenses_df, hide_index=True)
     st.markdown(f'''#### Total expenses this month: :red-background[{expenses} PLN]''')
 with col2:
-    st.title("Latest incomes")
+    st.title("Lately added incomes")
     st.dataframe(incomes_df, hide_index=True)
     st.markdown(f'''#### Total incomes this month: :green-background[{incomes} PLN]''')
 

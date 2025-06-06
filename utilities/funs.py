@@ -130,4 +130,4 @@ def merge_two_dfs(incomes: pd.DataFrame,
                   expenses: pd.DataFrame) -> pd.DataFrame:
     incomes = incomes.rename(columns={'Amount': 'Incomes'})
     expenses = expenses.rename(columns={'Amount': 'Expenses'})
-    return pd.concat([incomes, expenses], axis=1)
+    return pd.concat([incomes, expenses])
