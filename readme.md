@@ -9,7 +9,7 @@ use ```git clone https://github.com/pMaciek1/Budget.git```
 
 After getting the repository you can run application via ```streamlit run app.py``` command.
 
-Eventually you can build and run docker image:
+Alternatively you can build and run docker image:
 
 in project directory run ```docker build -t budgetapp .``` - this will start creating Docker Image
 then you can run ```docker run -p 8501:8501 budgetapp``` - this will run the streamlit app on port 8501
