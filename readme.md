@@ -4,14 +4,14 @@ A simple Python application for budgeting, built with Streamlit and SQLite.
 ## Requirements / Installation
 Before running the project, make sure you have the following installed:
 
-## Running the project
-First - clone the repository to your machine:
+### Requirements:
 - **Python 3.12+**
 - **pip**
 - **Streamlit**
 - **SQLite3**
 - **Docker** (optional)
 
+### Installation:
 
 Navigate to the desired directory via ```cd``` command and
 use
